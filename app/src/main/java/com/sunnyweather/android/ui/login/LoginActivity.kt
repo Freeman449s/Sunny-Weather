@@ -8,15 +8,20 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.sunnyweather.android.databinding.ActivityLoginBinding
 
 import com.sunnyweather.android.R
 
 class LoginActivity : AppCompatActivity() {
+
+    // TODO 改造LoginActivity，使其可用于输入token
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
@@ -65,7 +70,9 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
-        username.afterTextChanged {// TODO checkpoint
+        Log.d("EditText.text", username.text::class.toString())
+
+        username.afterTextChanged {
             loginViewModel.loginDataChanged(
                 username.text.toString(),
                 password.text.toString()
@@ -80,15 +87,17 @@ class LoginActivity : AppCompatActivity() {
                 )
             }
 
-            setOnEditorActionListener { _, actionId, _ ->
+            // 与输入法有关的监听器，当在输入法上进行各种操作时回调
+            setOnEditorActionListener { view: TextView, actionId: Int, event: KeyEvent ->
+                // actionId是输入法发出的操作的标识符，可以在layout文件中编辑键盘右下角按钮执行的操作
                 when (actionId) {
-                    EditorInfo.IME_ACTION_DONE ->
+                    EditorInfo.IME_ACTION_DONE -> // “完成”操作
                         loginViewModel.login(
                             username.text.toString(),
                             password.text.toString()
                         )
                 }
-                false
+                false // 隐藏键盘
             }
 
             login.setOnClickListener {
@@ -122,8 +131,7 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         override fun afterTextChanged(editable: Editable?) {
             // 此处afterTextChanged为传入EditText.afterTextChanged()的lambda
             // 将editable转为String后，交给lambda处理
-            // TODO 这里的editable是什么？
-            afterTextChanged.invoke(editable.toString())
+            afterTextChanged.invoke(editable.toString()) // editable是SpannableBuilder类型的数据，该类型与EditText.text相同
         }
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
