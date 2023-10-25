@@ -4,7 +4,6 @@ package com.sunnyweather.android.ui.login
  * Data validation state of the login form.
  */
 data class LoginFormState(
-    val usernameError: Int? = null,
-    val passwordError: Int? = null,
+    val tokenError: Int? = null, // 具体错误信息通过resource id来获取
     val isDataValid: Boolean = false
 )

@@ -21,7 +21,8 @@ import com.sunnyweather.android.R
 
 class LoginActivity : AppCompatActivity() {
 
-    // TODO 改造LoginActivity，使其可用于输入token
+    // TODO 改造LoginActivity，使其可用于输入token和称呼
+    // TODO 如果不输入称呼，则设置一个默认的称呼
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
@@ -32,10 +33,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val username = binding.username
-        val password = binding.password
-        val login = binding.login
+        val tokenEditText = binding.tokenEdit
+        val nameEditText = binding.nameEdit
         val loading = binding.loading
+        val confirmBtn = binding.confirm
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -43,14 +44,12 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+            // disable confirm button unless token has been input
+            confirmBtn.isEnabled = loginState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
-            }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
+            if (loginState.tokenError != null) {
+                if (loginViewModel.tokenEditHadFocus) // 只有在曾经获取过焦点后才展示错误信息
+                    tokenEditText.error = getString(loginState.tokenError)
             }
         })
 
@@ -71,6 +70,10 @@ class LoginActivity : AppCompatActivity() {
         })
 
         Log.d("EditText.text", username.text::class.toString())
+
+        tokenEditText.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
+            if (hasFocus) loginViewModel.tokenEditHadFocus = true
+        }
 
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
@@ -100,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
                 false // 隐藏键盘
             }
 
-            login.setOnClickListener {
+            confirmBtn.setOnClickListener {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }

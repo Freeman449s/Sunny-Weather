@@ -11,9 +11,21 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".ui.login.LoginActivity">
 
+    <TextView
+        android:id="@+id/tokenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name_token_edittext"
+        android:textSize="@dimen/promptTextSize"
+        app:layout_constraintBottom_toTopOf="@id/tokenEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <!-- selectAllOnFocus: 选中输入框时，选择所有文本 -->
     <EditText
-        android:id="@+id/token"
+        android:id="@+id/tokenEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
@@ -22,6 +34,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nameName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/name_name_edittext"
+        android:textSize="@dimen/promptTextSize"
+        app:layout_constraintBottom_toTopOf="@id/nameEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.02"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokenEdit" />
+
+    <EditText
+        android:id="@+id/nameEdit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_name"
+        android:selectAllOnFocus="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameName" />
+
 
     <!-- layout_constraintVertical_bias: 设置上方空白占总空白的比例 -->
     <Button
@@ -36,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/token"
+        app:layout_constraintTop_toBottomOf="@+id/nameEdit"
         app:layout_constraintVertical_bias="0.2" />
 
     <ProgressBar
@@ -48,8 +84,8 @@
         android:layout_marginBottom="64dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/token"
-        app:layout_constraintStart_toStartOf="@+id/token"
+        app:layout_constraintEnd_toEndOf="@+id/tokenEdit"
+        app:layout_constraintStart_toStartOf="@+id/tokenEdit"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
 
