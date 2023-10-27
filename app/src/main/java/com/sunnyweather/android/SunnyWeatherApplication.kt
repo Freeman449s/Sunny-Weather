@@ -13,6 +13,14 @@ class SunnyWeatherApplication : Application() {
         fun getContext(): Context {
             return context
         }
+
+        fun getToken(): String? {
+            val sp = context.getSharedPreferences(
+                context.getString(R.string.userInfoSp),
+                Context.MODE_PRIVATE
+            )
+            return sp.getString(context.getString(R.string.spTokenKey), null)
+        }
     }
 
     override fun onCreate() {

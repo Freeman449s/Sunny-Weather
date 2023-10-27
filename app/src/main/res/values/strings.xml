@@ -15,4 +15,8 @@
     <string name="login_failed">"Login failed"</string>
     <string name="name_token_edittext">令牌</string>
     <string name="name_name_edittext">称呼</string>
+    <string name="defaultUserName">User</string>
+    <string name="userInfoSp">user_info</string>
+    <string name="spTokenKey">token</string>
+    <string name="spUserNameKey">name</string>
 </resources>

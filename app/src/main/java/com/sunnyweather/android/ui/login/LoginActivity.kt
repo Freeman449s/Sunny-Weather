@@ -18,11 +18,10 @@ import android.widget.Toast
 import com.sunnyweather.android.databinding.ActivityLoginBinding
 
 import com.sunnyweather.android.R
+import java.lang.Thread.sleep
+import kotlin.concurrent.thread
 
 class LoginActivity : AppCompatActivity() {
-
-    // TODO 改造LoginActivity，使其可用于输入token和称呼
-    // TODO 如果不输入称呼，则设置一个默认的称呼
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
@@ -41,6 +40,11 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
+        if (loginViewModel.isUserInfoInitialized()) {
+            tokenEditText.setText(loginViewModel.userInfo.token)
+            nameEditText.setText(loginViewModel.userInfo.name)
+        }
+
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
 
@@ -53,66 +57,41 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
-
-            loading.visibility = View.GONE // 视图不显示，且不占用屏幕空间
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-            }
-            setResult(Activity.RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            finish()
-        })
-
-        Log.d("EditText.text", username.text::class.toString())
-
         tokenEditText.setOnFocusChangeListener { _: View?, hasFocus: Boolean ->
             if (hasFocus) loginViewModel.tokenEditHadFocus = true
         }
 
-        username.afterTextChanged {
+        tokenEditText.afterTextChanged {
             loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
+                tokenEditText.text.toString(),
+                nameEditText.text.toString()
             )
         }
 
-        password.apply {
-            afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
-                )
-            }
+        nameEditText.afterTextChanged {
+            loginViewModel.loginDataChanged(
+                tokenEditText.text.toString(),
+                nameEditText.text.toString()
+            )
+        }
 
-            // 与输入法有关的监听器，当在输入法上进行各种操作时回调
-            setOnEditorActionListener { view: TextView, actionId: Int, event: KeyEvent ->
-                // actionId是输入法发出的操作的标识符，可以在layout文件中编辑键盘右下角按钮执行的操作
-                when (actionId) {
-                    EditorInfo.IME_ACTION_DONE -> // “完成”操作
-                        loginViewModel.login(
-                            username.text.toString(),
-                            password.text.toString()
-                        )
+        confirmBtn.setOnClickListener {
+            loading.visibility = View.VISIBLE
+            loginViewModel.confirmUserInfo()
+            thread {
+                sleep(3000)
+                runOnUiThread {
+                    loading.visibility = View.GONE
+                    updateUiWithUser(loginViewModel.userInfo)
+                    finish()
                 }
-                false // 隐藏键盘
-            }
-
-            confirmBtn.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
             }
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(userInfo: UserInfo) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
+        val displayName = userInfo.name
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,
@@ -121,9 +100,6 @@ class LoginActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
-    }
 }
 
 /**
