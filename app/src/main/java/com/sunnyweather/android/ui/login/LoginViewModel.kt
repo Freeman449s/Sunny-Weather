@@ -41,6 +41,7 @@ class LoginViewModel : ViewModel() {
             putString(appContext.getString(R.string.spUserNameKey), saveName)
             apply()
         }
+        SunnyWeatherApplication.refreshToken()
     }
 
     fun isUserInfoInitialized(): Boolean {

@@ -10,16 +10,28 @@ class SunnyWeatherApplication : Application() {
         @SuppressLint("StaticFieldLeak")
         private lateinit var context: Context
 
+        private var token: String? = null
+
         fun getContext(): Context {
             return context
         }
 
         fun getToken(): String? {
+            if (token != null) return token
+
+            refreshToken()
+            return token
+        }
+
+        /**
+         * 从SharedPreferences更新token
+         */
+        fun refreshToken() {
             val sp = context.getSharedPreferences(
                 context.getString(R.string.userInfoSp),
                 Context.MODE_PRIVATE
             )
-            return sp.getString(context.getString(R.string.spTokenKey), null)
+            token = sp.getString(context.getString(R.string.spTokenKey), null)
         }
     }
 
