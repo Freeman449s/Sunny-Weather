@@ -19,4 +19,5 @@
     <string name="userInfoSp">user_info</string>
     <string name="spTokenKey">token</string>
     <string name="spUserNameKey">name</string>
+    <string name="responseStatusOK">ok</string>
 </resources>
