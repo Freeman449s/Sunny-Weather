@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.sunnyweather.android'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.sunnyweather.android"
