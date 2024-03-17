@@ -1,6 +1,7 @@
 package com.sunnyweather.android.ui.login
 
 import android.app.Activity
+import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -15,9 +16,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.sunnyweather.android.MainActivity
 import com.sunnyweather.android.databinding.ActivityLoginBinding
 
 import com.sunnyweather.android.R
+import com.sunnyweather.android.SunnyWeatherApplication
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
@@ -40,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
-        if (loginViewModel.isUserInfoInitialized()) {
+        if (loginViewModel.isUserInfoInitialized()) { // 因为屏幕旋转等原因重新创建Activity时，填充先前输入的内容
             tokenEditText.setText(loginViewModel.userInfo.token)
             nameEditText.setText(loginViewModel.userInfo.name)
         }
@@ -75,6 +78,7 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
+        // 只有通过ViewModel的数据合法性校验，才能按下此按钮
         confirmBtn.setOnClickListener {
             loading.visibility = View.VISIBLE
             loginViewModel.confirmUserInfo()
@@ -83,6 +87,11 @@ class LoginActivity : AppCompatActivity() {
                 runOnUiThread {
                     loading.visibility = View.GONE
                     updateUiWithUser(loginViewModel.userInfo)
+                    // 如果LoginActivity是唯一运行的Activity，则在完成登录时启动MainActivity
+                    if (SunnyWeatherApplication.getNumRunningActivities() == 1) {
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }
                     finish()
                 }
             }

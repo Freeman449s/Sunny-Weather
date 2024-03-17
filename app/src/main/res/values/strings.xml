@@ -2,6 +2,7 @@
     <string name="app_name">Sunny Weather</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_input_place">输入想搜寻的位置...</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_token">输入你的令牌</string>
     <string name="prompt_name">应该如何称呼你？</string>

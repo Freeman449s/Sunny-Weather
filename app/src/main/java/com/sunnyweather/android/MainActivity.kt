@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.sunnyweather.android.databinding.ActivityMainBinding
 import com.sunnyweather.android.ui.login.LoginActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : SunnyWeatherActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         SunnyWeatherApplication.getToken() ?: let {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }
