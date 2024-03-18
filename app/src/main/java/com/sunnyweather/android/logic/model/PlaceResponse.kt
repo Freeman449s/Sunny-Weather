@@ -2,12 +2,21 @@ package com.sunnyweather.android.logic.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Location(val lng: String, val lat: String)
 
-data class Place(
-    val name: String,
-    val location: Location,
-    @SerializedName("formatted_address") val address: String
-)
+data class PlaceResponse(val status: String, val places: List<Place>) {
+    data class PlaceCoordinate(
+        @SerializedName("lng") val longitude: String,
+        @SerializedName("lat") val latitude: String
+    )
 
-data class PlaceResponse(val status: String, val places: List<Place>)
+    /**
+     * @property name 地点名称
+     * @property location 经纬度
+     * @property address 地点的详细地址
+     */
+    data class Place(
+        val name: String,
+        val location: PlaceCoordinate,
+        @SerializedName("formatted_address") val address: String
+    )
+}

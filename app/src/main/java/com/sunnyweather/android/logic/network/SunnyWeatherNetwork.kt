@@ -1,6 +1,6 @@
 package com.sunnyweather.android.logic.network
 
-import com.sunnyweather.android.SunnyWeatherApplication
+import com.sunnyweather.android.logic.model.PlaceResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,10 +14,33 @@ import kotlin.coroutines.suspendCoroutine
  */
 object SunnyWeatherNetwork {
     private val placeService = ServiceCreator.create(PlaceService::class.java)
+    private val weatherService = ServiceCreator.create(WeatherService::class.java)
 
     suspend fun searchPlaces(query: String, token: String) =
         placeService.searchPlaces(query, token).await()
 
+
+    suspend fun queryRealtimeWeather(
+        placeCoordinate: PlaceResponse.PlaceCoordinate, token: String
+    ) =
+        weatherService.getRealtimeWeather(
+            token,
+            placeCoordinate.longitude,
+            placeCoordinate.latitude
+        ).await()
+
+    suspend fun queryDailyWeather(
+        placeCoordinate: PlaceResponse.PlaceCoordinate, token: String
+    ) =
+        weatherService.getDailyWeather(token, placeCoordinate.longitude, placeCoordinate.latitude)
+            .await()
+
+    /**
+     * 简化网络请求回调的扩展函数，封装了通用的请求处理过程
+     *
+     * @param T 响应体的类型
+     * @return 响应体，或抛出异常
+     */
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine<T> { continuation: Continuation<T> ->
             enqueue(object : Callback<T> {
