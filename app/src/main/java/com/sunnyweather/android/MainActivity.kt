@@ -15,7 +15,7 @@ class MainActivity : SunnyWeatherActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        SunnyWeatherApplication.getToken() ?: let {
+        if (!SunnyWeatherApplication.hasToken()) {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()

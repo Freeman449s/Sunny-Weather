@@ -13,7 +13,7 @@ interface PlaceService {
     /**
      * 根据输入查询相关的地名
      */
-    @GET("v2.6/place?lang=zh_CN")
+    @GET("v2/place?lang=zh_CN") // 查询城市的API是V2版本的
     fun searchPlaces(
         @Query("query") query: String,
         @Query("token") token: String

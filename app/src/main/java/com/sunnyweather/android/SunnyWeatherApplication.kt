@@ -19,17 +19,34 @@ class SunnyWeatherApplication : Application() {
             return context
         }
 
-        fun getToken(): String? {
-            if (token != null) return token
+        fun hasToken(): Boolean {
+            return token != null
+        }
+
+        fun getToken(): String {
+            if (token != null) return token as String
+            else throw NullPointerException("Token is null.")
+        }
+
+        /**
+         * 更新保存在SharedPreferences中的用户信息
+         */
+        fun updateNameAndToken(userName: String, token: String) {
+            val sp =
+                context.getSharedPreferences(context.getString(R.string.userInfoSp), MODE_PRIVATE)
+            sp.edit().apply {
+                putString(context.getString(R.string.spTokenKey), token)
+                putString(context.getString(R.string.spUserNameKey), userName)
+                apply()
+            }
 
             refreshToken()
-            return token
         }
 
         /**
          * 从SharedPreferences更新token
          */
-        fun refreshToken() {
+        private fun refreshToken() {
             val sp = context.getSharedPreferences(
                 context.getString(R.string.userInfoSp),
                 Context.MODE_PRIVATE
@@ -53,5 +70,6 @@ class SunnyWeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         context = applicationContext
+        refreshToken()
     }
 }

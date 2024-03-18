@@ -20,11 +20,12 @@ import com.sunnyweather.android.MainActivity
 import com.sunnyweather.android.databinding.ActivityLoginBinding
 
 import com.sunnyweather.android.R
+import com.sunnyweather.android.SunnyWeatherActivity
 import com.sunnyweather.android.SunnyWeatherApplication
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : SunnyWeatherActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
@@ -83,7 +84,7 @@ class LoginActivity : AppCompatActivity() {
             loading.visibility = View.VISIBLE
             loginViewModel.confirmUserInfo()
             thread {
-                sleep(3000)
+                sleep(2000)
                 runOnUiThread {
                     loading.visibility = View.GONE
                     updateUiWithUser(loginViewModel.userInfo)

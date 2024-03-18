@@ -20,8 +20,7 @@ class LoginViewModel : ViewModel() {
         userInfo = UserInfo(token, name)
         if (!isTokenValid(token)) {
             _loginForm.value = LoginFormState(tokenError = R.string.invalidToken)
-        }
-        else {
+        } else {
             _loginForm.value = LoginFormState(isDataValid = true)
         }
     }
@@ -34,14 +33,7 @@ class LoginViewModel : ViewModel() {
         val saveName = if (userInfo.name.isNotEmpty()) userInfo.name
         else appContext.getString(R.string.defaultUserName)
 
-        val sp =
-            appContext.getSharedPreferences(appContext.getString(R.string.userInfoSp), MODE_PRIVATE)
-        sp.edit().apply {
-            putString(appContext.getString(R.string.spTokenKey), userInfo.token)
-            putString(appContext.getString(R.string.spUserNameKey), saveName)
-            apply()
-        }
-        SunnyWeatherApplication.refreshToken()
+        SunnyWeatherApplication.updateNameAndToken(saveName, userInfo.token)
     }
 
     fun isUserInfoInitialized(): Boolean {
