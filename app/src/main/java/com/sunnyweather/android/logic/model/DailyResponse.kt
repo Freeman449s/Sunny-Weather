@@ -21,7 +21,11 @@ data class DailyResponse(val status: String, val result: Result) {
         val dressing: List<LifeDesc>
     )
 
-    data class Skycon(val value: String, val date: Date)
+    /**
+     * “正则化的”天气状况，只包括表达天气的字符串和日期
+     * 与用于展示的天气状况区分
+     */
+    data class CanonicalSkycon(val value: String, val date: Date)
 
     data class Temperature(val min: Float, val max: Float)
 
@@ -30,7 +34,7 @@ data class DailyResponse(val status: String, val result: Result) {
      */
     data class Daily(
         val temperature: List<Temperature>,
-        val skycon: List<Skycon>,
+        @SerializedName("skycon") val canonicalSkycon: List<CanonicalSkycon>,
         @SerializedName("life_index") val lifeIndex: LifeIndex
     )
 

@@ -49,8 +49,13 @@ class PlaceFragment : Fragment() {
 
                     // 搜索框回调函数
                     binding.searchPlaceEdit.addTextChangedListener {
+                        val originalLength = it.toString().length
                         val content = it.toString().trim()
-                        binding.searchPlaceEdit.setText(content) // 去除可能存在的换行符
+                        if (content.length != originalLength) {
+                            // 去除可能存在的换行符
+                            // 会再次回调到TextChangedListener()
+                            binding.searchPlaceEdit.setText(content)
+                        }
                         if (content.isNotEmpty()) {
                             viewModel.searchPlaces(
                                 content,

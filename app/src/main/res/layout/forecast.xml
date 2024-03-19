@@ -1,33 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 在搜索城市页面展示的城市信息卡片 -->
+<?xml version="1.0" encoding="utf-8"?><!-- 显示未来几天天气的布局 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_margin="4dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="15dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginEnd="15dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="@dimen/cardElevation">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="18dp"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/cardPlaceNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/forecastTitle"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/placeCardTitleSize" />
+            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/cardPlaceAddressText"
-            android:layout_width="wrap_content"
+        <!-- 展示预报信息的布局 -->
+        <LinearLayout
+            android:id="@+id/forecastLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/placeCardDescSize" />
+            android:orientation="vertical" />
+
     </LinearLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

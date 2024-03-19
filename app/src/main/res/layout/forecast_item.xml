@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 展示预报中某一天天气的布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:id="@+id/forecastDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="4" />
+
+    <ImageView
+        android:id="@+id/forecastSkyconIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/forecastSkycon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="3"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/forecastTemperature"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="3"
+        android:gravity="end" />
+
+</LinearLayout>
