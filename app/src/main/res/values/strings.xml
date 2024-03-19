@@ -21,6 +21,8 @@
     <string name="prompt_token">输入你的令牌</string>
     <string name="prompt_name">应该如何称呼你？</string>
     <string name="responseStatusOK">ok</string>
+    <string name="savedPlaceSp">saved_place</string>
+    <string name="spSavedPlaceKey">saved_place</string>
     <string name="spTokenKey">token</string>
     <string name="spUserNameKey">name</string>
     <string name="title_activity_login">LoginActivity</string>

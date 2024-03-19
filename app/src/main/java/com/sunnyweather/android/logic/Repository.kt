@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.sunnyweather.android.R
 import com.sunnyweather.android.SunnyWeatherApplication
+import com.sunnyweather.android.logic.dao.PlaceDao
+import com.sunnyweather.android.logic.model.Place
 import com.sunnyweather.android.logic.model.PlaceResponse
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.network.SunnyWeatherNetwork
@@ -28,7 +30,7 @@ object Repository {
         } else {
             // Result.value是Failure类型，但是T参数仍为List<Place>
             // 显式声明类型参数是不必要的，可以通过上面的success调用来推断
-            Result.failure<List<PlaceResponse.Place>>(RuntimeException("response status: ${placeResponse.status}"))
+            Result.failure<List<Place>>(RuntimeException("response status: ${placeResponse.status}"))
         }
     }
 
@@ -61,6 +63,23 @@ object Repository {
                 }
             }
         }
+
+
+    // ==================== 地点存取功能 ====================
+
+    fun savePlace(place: Place) {
+        PlaceDao().savePlace(place)
+    }
+
+    fun getSavedPlace(): Place {
+        return PlaceDao().getSavedPlace()
+    }
+
+    fun hasSavedPlace(): Boolean {
+        return PlaceDao().hasSavedPlace()
+    }
+
+    // ==================== 结束 ====================
 
     /**
      * 用于在发起网络请求时屏蔽try-catch过程
