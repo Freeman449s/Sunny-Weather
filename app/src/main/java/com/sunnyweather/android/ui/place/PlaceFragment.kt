@@ -1,6 +1,7 @@
 package com.sunnyweather.android.ui.place
 
 import android.content.Context
+import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,11 +19,12 @@ import com.sunnyweather.android.R
 import com.sunnyweather.android.SunnyWeatherApplication
 import com.sunnyweather.android.ToastUtils
 import com.sunnyweather.android.databinding.FragmentSearchPlaceBinding
+import com.sunnyweather.android.ui.weather.WeatherActivity
 
 class PlaceFragment : Fragment() {
 
     lateinit var binding: FragmentSearchPlaceBinding
-    private val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }
+    val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,6 +44,27 @@ class PlaceFragment : Fragment() {
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
             when (event) {
                 Lifecycle.Event.ON_CREATE -> { // 替代onActivityCreated
+                    // 如果有存储的地点，则直接启动WeatherActivity
+                    if (viewModel.hasSavedPlace()) {
+                        val intent = Intent(context, WeatherActivity::class.java)
+                        val place = viewModel.getSavedPlace()
+                        intent.putExtra(
+                            context?.getString(R.string.intentExtraPlaceName),
+                            place.name
+                        )
+                        intent.putExtra(
+                            context?.getString(R.string.intentExtraLng),
+                            place.location.longitude
+                        )
+                        intent.putExtra(
+                            context?.getString(R.string.intentExtraLat),
+                            place.location.latitude
+                        )
+                        startActivity(intent)
+                        activity?.finish()
+                        return // 不执行后面的过程
+                    }
+
                     val layoutManager = LinearLayoutManager(activity)
                     binding.recyclerView.layoutManager = layoutManager
                     val adapter = PlaceAdapter(this@PlaceFragment, viewModel.placeList)
