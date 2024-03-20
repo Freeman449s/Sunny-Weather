@@ -45,7 +45,7 @@ class PlaceFragment : Fragment() {
             when (event) {
                 Lifecycle.Event.ON_CREATE -> { // 替代onActivityCreated
                     // 如果有存储的地点，则直接启动WeatherActivity
-                    if (viewModel.hasSavedPlace()) {
+                    if (activity !is WeatherActivity && viewModel.hasSavedPlace()) {
                         val intent = Intent(context, WeatherActivity::class.java)
                         val place = viewModel.getSavedPlace()
                         intent.putExtra(

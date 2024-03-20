@@ -1,16 +1,20 @@
 package com.sunnyweather.android.ui.weather
 
-import android.graphics.Color
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import androidx.lifecycle.ViewModelProvider
-import com.sunnyweather.android.R
-import com.sunnyweather.android.SunnyWeatherActivity
-import com.sunnyweather.android.SunnyWeatherApplication
-import com.sunnyweather.android.ToastUtils
+import com.sunnyweather.android.*
 import com.sunnyweather.android.databinding.ActivityWeatherBinding
 import com.sunnyweather.android.databinding.ForecastItemBinding
 import com.sunnyweather.android.logic.model.DailyResponse
@@ -21,10 +25,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class WeatherActivity : SunnyWeatherActivity() {
-    private lateinit var binding: ActivityWeatherBinding
-    private val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
 
+class WeatherActivity : SunnyWeatherActivity() {
+    lateinit var binding: ActivityWeatherBinding
+    val viewModel by lazy { ViewModelProvider(this).get(WeatherViewModel::class.java) }
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWeatherBinding.inflate(layoutInflater)
@@ -49,13 +55,40 @@ class WeatherActivity : SunnyWeatherActivity() {
                 ToastUtils.makeToast("未能获取到天气信息")
                 result.exceptionOrNull()?.printStackTrace()
             }
+            binding.swipeRefresh.isRefreshing = false
         }
 
-        viewModel.refreshWeather(
-            viewModel.longitude,
-            viewModel.latitude,
-            SunnyWeatherApplication.getToken()
-        )
+        // 下拉刷新相关功能
+        binding.swipeRefresh.setOnRefreshListener {
+            refresh()
+        }
+        var color: Int? = null
+        color = getColorCompat(R.attr.color_primary)
+        binding.swipeRefresh.setColorSchemeColors(color)
+
+        // 抽屉相关功能
+        val drawerBtn = findViewById<Button>(R.id.navBtn)
+        drawerBtn.setOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+        binding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerOpened(drawerView: View) {}
+
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+            override fun onDrawerStateChanged(newState: Int) {}
+
+            override fun onDrawerClosed(drawerView: View) { // 关闭抽屉时，隐藏输入法
+                // TODO CHECKPOINT
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(
+                    drawerView.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
+            }
+        })
+
+        refresh()
     }
 
     /**
@@ -114,5 +147,10 @@ class WeatherActivity : SunnyWeatherActivity() {
         carWashingText.text = lifeInfoCollection.carWashing[0].desc
 
         binding.weatherLayout.visibility = View.VISIBLE
+    }
+
+    fun refresh() {
+        viewModel.refreshWeather(SunnyWeatherApplication.getToken())
+        binding.swipeRefresh.isRefreshing = true
     }
 }

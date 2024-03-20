@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.sunnyweather.android.MainActivity
 import com.sunnyweather.android.R
 import com.sunnyweather.android.logic.model.Place
+import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.ui.weather.WeatherActivity
 
 class PlaceAdapter(
@@ -34,13 +36,22 @@ class PlaceAdapter(
 
             fragment.viewModel.savePlace(place)
 
-            val context = parent.context
-            val intent = Intent(context, WeatherActivity::class.java)
-            intent.putExtra(context.getString(R.string.intentExtraLng), coordinate.longitude)
-            intent.putExtra(context.getString(R.string.intentExtraLat), coordinate.latitude)
-            intent.putExtra(context.getString(R.string.intentExtraPlaceName), placeName)
-            fragment.startActivity(intent)
-            fragment.activity?.finish()
+            if (fragment.activity is WeatherActivity) { // 如果fragment被嵌入WeatherActivity，则在点击项目时进行刷新
+                val activity = fragment.activity as WeatherActivity
+                activity.viewModel.longitude = place.location.longitude
+                activity.viewModel.latitude = place.location.latitude
+                activity.viewModel.placeName = place.name
+                activity.binding.drawerLayout.closeDrawers()
+                activity.refresh()
+            } else { // 如果fragment被嵌入其他Activity，则跳转到WeatherActivity
+                val context = parent.context
+                val intent = Intent(context, WeatherActivity::class.java)
+                intent.putExtra(context.getString(R.string.intentExtraLng), coordinate.longitude)
+                intent.putExtra(context.getString(R.string.intentExtraLat), coordinate.latitude)
+                intent.putExtra(context.getString(R.string.intentExtraPlaceName), placeName)
+                fragment.startActivity(intent)
+                fragment.activity?.finish()
+            }
         }
 
         return holder
