@@ -79,7 +79,7 @@ class WeatherActivity : SunnyWeatherActivity() {
             override fun onDrawerStateChanged(newState: Int) {}
 
             override fun onDrawerClosed(drawerView: View) { // 关闭抽屉时，隐藏输入法
-                // TODO CHECKPOINT
+                // TODO 学习API
                 val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(
                     drawerView.windowToken,
