@@ -26,7 +26,7 @@ object Repository {
             // 标准库的Result<T>只有一个value:Any?成员，而不像一些实现中有表示结果的success成员和表示失败的failure成员
             // success()方法会直接将传入的对象作为value，而failure()方法会调用createFailure()将传入的对象转为Failure类型，再作为value
             // T并不一定与value成员的类型相同。例如，T是某个数据类，而Result中存储的是Failure时，Result的getOrNull()方法将返回null
-            Result.success(placeResponse.places)
+            Result.success(placeResponse.places) // 这个返回值将被fire()中的liveData()包装进LiveData
         } else {
             // Result.value是Failure类型，但是T参数仍为List<Place>
             // 显式声明类型参数是不必要的，可以通过上面的success调用来推断
@@ -44,7 +44,7 @@ object Repository {
                 val dailyDefer = async {
                     SunnyWeatherNetwork.queryDailyWeather(coordinate, token)
                 }
-                val realtimeResponse = realtimeDefer.await()
+                val realtimeResponse = realtimeDefer.await() // kotlin内置await()，将导致挂起
                 val dailyResponse = dailyDefer.await()
                 val context = SunnyWeatherApplication.getContext()
                 if (realtimeResponse.status == context.getString(R.string.responseStatusOK)
@@ -82,7 +82,7 @@ object Repository {
     // ==================== 结束 ====================
 
     /**
-     * 用于在发起网络请求时屏蔽try-catch过程
+     * 将block()的返回值包装进LiveData，同时屏蔽try-catch过程
      */
     private fun <T> fire(
         context: CoroutineContext,
@@ -90,7 +90,7 @@ object Repository {
     ): LiveData<Result<T>> =
         liveData<Result<T>>(context) {
             val result = try {
-                block()
+                block() // 挂起函数
             } catch (ex: Exception) {
                 Result.failure(ex)
             }

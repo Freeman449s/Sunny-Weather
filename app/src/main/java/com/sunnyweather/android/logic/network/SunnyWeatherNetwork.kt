@@ -46,7 +46,7 @@ object SunnyWeatherNetwork {
             enqueue(object : Callback<T> {
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     val body = response.body()
-                    if (body != null) continuation.resume(body)
+                    if (body != null) continuation.resume(body) // body: Response
                     else continuation.resumeWithException(java.lang.RuntimeException("Response body is null"))
                 }
 
